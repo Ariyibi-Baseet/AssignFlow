@@ -90,10 +90,10 @@ Generate 1 assignment ideas on`;
       <Navbar />
 
       <div id="home-page" className="@container mx-auto p-0 sm:p-10">
-        <h1 className="text-3xl text-center font-bold mt-28">
+        <h1 className="text-2xl sm:text-3xl text-center font-bold mt-28">
           Generate Web Development Assignment with AI
         </h1>
-        <p className="text-xl text-center mx-auto mt-3 max-w-[540px]">
+        <p className="text-lg sm:text-xl text-center mx-auto mt-3 max-w-[540px]">
           Enter a topic below and let AI suggest practical exercises tailored
           for web development students
         </p>
