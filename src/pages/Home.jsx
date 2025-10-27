@@ -89,7 +89,7 @@ Generate 1 assignment ideas on`;
     <>
       <Navbar />
 
-      <div id="home-page" className="@container mx-auto">
+      <div id="home-page" className="@container mx-auto p-0 sm:p-10">
         <h1 className="text-3xl text-center font-bold mt-28">
           Generate Web Development Assignment with AI
         </h1>
