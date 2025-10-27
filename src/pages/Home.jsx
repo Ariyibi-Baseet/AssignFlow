@@ -98,7 +98,7 @@ Generate 1 assignment ideas on`;
           for web development students
         </p>
 
-        <div className="w-3/5 mx-auto shadow-lg p-8 mt-20">
+        <div className="w-full sm:w-3/5 mx-auto shadow-lg p-8 mt-20">
           <div className="mb-3">
             <Label htmlFor="topic" className="mb-3">
               Topic
