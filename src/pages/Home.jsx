@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 // component from lucide-react
-import { Pencil } from "lucide-react";
+import { Pencil, Save } from "lucide-react";
 // Page Components
 import Navbar from "../components/ui/PageComponent/Navbar";
 // import OpenAI from "openai";
@@ -165,6 +165,12 @@ Generate 1 assignment ideas on`;
               <CardContent>
                 <ReactMarkdown>{textToDisplay}</ReactMarkdown>
               </CardContent>
+              <CardFooter>
+                <div className="save-area flex items-center">
+                  <Save /> <span className="text-lg ms-1">Save</span>
+                  <Badge variant="secondary">Coming Soon</Badge>
+                </div>
+              </CardFooter>
             </Card>
           </div>
         )}
