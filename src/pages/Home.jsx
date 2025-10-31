@@ -130,7 +130,6 @@ Generate 1 assignment ideas on`;
   return (
     <>
       <Navbar />
-      <button onClick={play}>play</button>
       <div id="home-page" className="@container mx-auto p-0 sm:p-10">
         <h1 className="text-2xl sm:text-3xl text-center font-bold mt-28">
           Generate Web Development Assignment with AI
