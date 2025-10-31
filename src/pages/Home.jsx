@@ -213,9 +213,9 @@ Generate 1 assignment ideas on`;
                   </Button>
 
                   <Dialog>
-                    <DialogTrigger asChild>
+                    {/* <DialogTrigger asChild>
                       <Button>Share</Button>
-                    </DialogTrigger>
+                    </DialogTrigger> */}
                     <DialogContent className="sm:max-w-md">
                       <DialogHeader>
                         <DialogTitle>Share link</DialogTitle>
