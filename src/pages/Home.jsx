@@ -23,14 +23,26 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 // component from lucide-react
 import { Pencil, Save } from "lucide-react";
 // Page Components
-import Navbar from "../components/ui/PageComponent/Navbar";
+import Navbar from "../components/PageComponent/Navbar";
 // import OpenAI from "openai";
 import { GoogleGenAI } from "@google/genai";
 // React Hooks
 import { useState } from "react";
+import useSound from "use-sound";
+import Beep from "../../public/sound/beep.mp3";
 // Other Component
 import ReactMarkdown from "react-markdown";
 
@@ -42,6 +54,11 @@ function Home() {
   const [fullyGenerated, setFullyGenerated] = useState(false);
   const [showAssignmentResponse, setShowAssignmentResponse] = useState(false);
   const [errMessage, setErrMessage] = useState("");
+  const [isSaveText, setIsSaveText] = useState("Save");
+  // const [assignmentArr, setAssignmentArr] = useState([]);
+  const [play] = useSound(Beep, { volume: 0.7 });
+
+  let assignmentArr = [""];
   const ai = new GoogleGenAI({
     apiKey: import.meta.env.VITE_GOOGLE_AI,
   });
@@ -49,7 +66,7 @@ function Home() {
   const prompt = `You are a web development instructor.
 Generate 1 assignment ideas on`;
 
-  const getResFromOpenAI = async () => {
+  const getResFromGeminiAI = async () => {
     if (!assignmentData.trim()) {
       setErrMessage("Please enter a topic before generating assignments.");
       return;
@@ -64,7 +81,7 @@ Generate 1 assignment ideas on`;
             role: "user",
             parts: [
               {
-                text: `${prompt} ${assignmentData} for Beginners. Make it short and concise so that student can copy and implement it`,
+                text: `${prompt} ${assignmentData} for Beginners. Make it short and concise, don't help them to solve it. Add instructions at the end that they must submit it to their teacher.`,
               },
             ],
           },
@@ -74,6 +91,7 @@ Generate 1 assignment ideas on`;
       // Will later add the text to local storage to keep track of the previous response
       if (text) {
         setTextToDisplay(text);
+        localStorage.setItem("AssignmentArr", text);
       } else {
         setErrMessage("No text was generated. Try again with a clearer topic.");
       }
@@ -81,14 +99,38 @@ Generate 1 assignment ideas on`;
       setIsLoading(false);
       setShowAssignmentResponse(true);
       setIsGenerated("Generated!🎉");
+      play();
       setFullyGenerated(true);
     }
+  };
+
+  const saveAssignmment = () => {
+    // save to local storage
+    // localStorage.setItem("AssignmentArr", assignmentArr);
+    // console.log("saved assignment", localStorage.getItem("AssignmentArr"));
+    assignmentArr.push(localStorage.getItem("AssignmentArr"));
+    const allAssignmentData = localStorage.setItem(
+      "All Assignment Data",
+      assignmentArr
+    );
+    setIsSaveText("Saved!");
+    console.log(assignmentArr.length);
+
+    assignmentArr.forEach((item) => {
+      console.log(item);
+    });
+
+    return allAssignmentData;
+
+    // console.log(hello);
+    // console.log(assignmentArr);
+    // setAssignmentArr;
   };
 
   return (
     <>
       <Navbar />
-
+      <button onClick={play}>play</button>
       <div id="home-page" className="@container mx-auto p-0 sm:p-10">
         <h1 className="text-2xl sm:text-3xl text-center font-bold mt-28">
           Generate Web Development Assignment with AI
@@ -132,7 +174,7 @@ Generate 1 assignment ideas on`;
             </div>
             <div className="mb-3">
               <Button
-                onClick={getResFromOpenAI}
+                onClick={getResFromGeminiAI}
                 disabled={fullyGenerated === true}
                 style={{
                   backgroundColor:
@@ -166,10 +208,50 @@ Generate 1 assignment ideas on`;
                 <ReactMarkdown>{textToDisplay}</ReactMarkdown>
               </CardContent>
               <CardFooter>
-                <div className="save-area flex items-center">
-                  <Save /> <span className="text-lg ms-1">Save</span>
-                  <Badge variant="secondary">Coming Soon</Badge>
+                <div className="flex items-center justify-between w-full">
+                  <Button variant="default" onClick={saveAssignmment}>
+                    <Save /> <span className="ms-1">{isSaveText}</span>
+                  </Button>
+
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button>Share</Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md">
+                      <DialogHeader>
+                        <DialogTitle>Share link</DialogTitle>
+                        <DialogDescription>
+                          Anyone who has this link will be able to view this.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="flex items-center gap-2">
+                        <div className="grid flex-1 gap-2">
+                          <Label htmlFor="link" className="sr-only">
+                            Link
+                          </Label>
+                          <Input
+                            id="link"
+                            defaultValue="https://ui.shadcn.com/docs/installation"
+                            readOnly
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter className="sm:justify-start">
+                        <DialogClose asChild>
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={saveAssignmment}
+                          >
+                            Close
+                          </Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </div>
+
+                {/* <div className="save-area flex items-center"></div> */}
               </CardFooter>
             </Card>
           </div>

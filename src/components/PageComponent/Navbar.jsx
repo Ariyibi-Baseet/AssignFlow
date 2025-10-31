@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Flame } from "lucide-react";
+import { Github } from "lucide-react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,31 +23,25 @@ function Navbar() {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex space-x-6">
-              <a
-                href="#"
-                className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
-              >
+              <Link className="text-gray-700 dark:text-gray-200 hover:text-blue-600 disabled">
                 Home
-              </a>
-              <a
-                href="#"
-                className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
-              >
-                Assignments
-              </a>
-              <a
-                href="#"
-                className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
-              >
-                Saved
-              </a>
-              <a
-                href="#"
-                className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
-              >
+              </Link>
+              <Link className="text-gray-700 dark:text-gray-200 hover:text-blue-600 disabled">
                 About
-              </a>
+              </Link>
+              <Link className="text-gray-700 dark:text-gray-200 hover:text-blue-600 disabled">
+                Assignments
+              </Link>
+              <Link className="text-gray-700 dark:text-gray-200 hover:text-blue-600 disabled">
+                Saved
+              </Link>
             </div>
+            <Link to="https://github.com/Ariyibi-Baseet/AssignFlow">
+              <Button variant="default">
+                <Github size={30} />
+                Star on Github
+              </Button>
+            </Link>
 
             {/* Mobile Menu Button */}
             <div className="md:hidden">
@@ -96,10 +93,10 @@ function Navbar() {
                 }}
                 className="flex flex-col space-y-2 px-4 py-3"
               >
-                {["Home", "Assignments", "saved", "About"].map((item) => (
+                {["Home", "About", "Assignments", "saved"].map((item) => (
                   <motion.a
                     key={item}
-                    href="#"
+                    to="#"
                     variants={{
                       open: { opacity: 1, y: 0 },
                       closed: { opacity: 0, y: -10 },
@@ -111,25 +108,25 @@ function Navbar() {
                   </motion.a>
                 ))}
                 {/* <a
-                  href="#"
+                  to="#"
                   className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
                 >
                   Home
                 </a>
                 <a
-                  href="#"
+                  to="#"
                   className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
                 >
                   Assignments
                 </a>
                 <a
-                  href="#"
+                  to="#"
                   className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
                 >
                   Saved
                 </a>
                 <a
-                  href="#"
+                  to="#"
                   className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
                 >
                   About
