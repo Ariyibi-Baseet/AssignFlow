@@ -42,6 +42,9 @@ import { GoogleGenAI } from "@google/genai";
 // React Hooks
 import { useState } from "react";
 import useSound from "use-sound";
+// Firebase
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../fireBaseConfig";
 import Beep from "../../public/sound/beep.mp3";
 // Other Component
 import ReactMarkdown from "react-markdown";
@@ -55,10 +58,12 @@ function Home() {
   const [showAssignmentResponse, setShowAssignmentResponse] = useState(false);
   const [errMessage, setErrMessage] = useState("");
   const [isSaveText, setIsSaveText] = useState("Save");
+  const [viewAssLink, setViewAssLink] = useState("");
+  const [isShareBtnDisabled, setShareBtnDisabled] = useState(true);
   // const [assignmentArr, setAssignmentArr] = useState([]);
   const [play] = useSound(Beep, { volume: 0.7 });
 
-  let assignmentArr = [""];
+  // let assignmentArr = [""];
   const ai = new GoogleGenAI({
     apiKey: import.meta.env.VITE_GOOGLE_AI,
   });
@@ -104,27 +109,20 @@ Generate 1 assignment ideas on`;
     }
   };
 
-  const saveAssignmment = () => {
-    // save to local storage
-    // localStorage.setItem("AssignmentArr", assignmentArr);
-    // console.log("saved assignment", localStorage.getItem("AssignmentArr"));
-    assignmentArr.push(localStorage.getItem("AssignmentArr"));
-    const allAssignmentData = localStorage.setItem(
-      "All Assignment Data",
-      assignmentArr
-    );
-    setIsSaveText("Saved!");
-    console.log(assignmentArr.length);
-
-    assignmentArr.forEach((item) => {
-      console.log(item);
+  const saveAssignmment = async () => {
+    // generate random unique ID
+    const id = crypto.randomUUID();
+    // Save Data in Firebase Firestore
+    await setDoc(doc(db, "assignments", id), {
+      id,
+      topic: assignmentData,
+      content: textToDisplay,
+      createdAt: new Date().toISOString(),
     });
 
-    return allAssignmentData;
-
-    // console.log(hello);
-    // console.log(assignmentArr);
-    // setAssignmentArr;
+    setViewAssLink(`${window.location.origin}/saved-assignment/${id}`);
+    setIsSaveText("Saved!");
+    setShareBtnDisabled(false);
   };
 
   return (
@@ -213,9 +211,9 @@ Generate 1 assignment ideas on`;
                   </Button>
 
                   <Dialog>
-                    {/* <DialogTrigger asChild>
-                      <Button>Share</Button>
-                    </DialogTrigger> */}
+                    <DialogTrigger asChild>
+                      <Button disabled={isShareBtnDisabled}>Share</Button>
+                    </DialogTrigger>
                     <DialogContent className="sm:max-w-md">
                       <DialogHeader>
                         <DialogTitle>Share link</DialogTitle>
@@ -230,7 +228,7 @@ Generate 1 assignment ideas on`;
                           </Label>
                           <Input
                             id="link"
-                            defaultValue="https://ui.shadcn.com/docs/installation"
+                            defaultValue={viewAssLink}
                             readOnly
                           />
                         </div>
