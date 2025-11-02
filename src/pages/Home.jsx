@@ -34,7 +34,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 // component from lucide-react
-import { Pencil, Save } from "lucide-react";
+import { Pencil, Bookmark, Share2 } from "lucide-react";
 // Page Components
 import Navbar from "../components/PageComponent/Navbar";
 // import OpenAI from "openai";
@@ -53,6 +53,7 @@ function Home() {
   const [assignmentData, setAssignmentData] = useState("");
   const [textToDisplay, setTextToDisplay] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaveLoading, setSaveLoading] = useState(false);
   const [isGenerated, setIsGenerated] = useState("Generate Assignments");
   const [fullyGenerated, setFullyGenerated] = useState(false);
   const [showAssignmentResponse, setShowAssignmentResponse] = useState(false);
@@ -110,19 +111,26 @@ Generate 1 assignment ideas on`;
   };
 
   const saveAssignmment = async () => {
-    // generate random unique ID
-    const id = crypto.randomUUID();
-    // Save Data in Firebase Firestore
-    await setDoc(doc(db, "assignments", id), {
-      id,
-      topic: assignmentData,
-      content: textToDisplay,
-      createdAt: new Date().toISOString(),
-    });
+    try {
+      setSaveLoading(true);
+      // generate random unique ID
+      const id = crypto.randomUUID();
+      // Save Data in Firebase Firestore
+      await setDoc(doc(db, "assignments", id), {
+        id,
+        topic: assignmentData,
+        content: textToDisplay,
+        createdAt: new Date().toISOString(),
+      });
 
-    setViewAssLink(`${window.location.origin}/saved-assignment/${id}`);
-    setIsSaveText("Saved!");
-    setShareBtnDisabled(false);
+      setViewAssLink(`${window.location.origin}/saved-assignment/${id}`);
+      setIsSaveText("Saved!");
+      setShareBtnDisabled(false);
+    } catch (error) {
+      return console.error(error);
+    } finally {
+      setSaveLoading(false);
+    }
   };
 
   return (
@@ -207,12 +215,16 @@ Generate 1 assignment ideas on`;
               <CardFooter>
                 <div className="flex items-center justify-between w-full">
                   <Button variant="default" onClick={saveAssignmment}>
-                    <Save /> <span className="ms-1">{isSaveText}</span>
+                    <Bookmark />
+                    <span className="ms-1">{isSaveText}</span>
+                    {isSaveLoading && <Spinner />}
                   </Button>
 
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button disabled={isShareBtnDisabled}>Share</Button>
+                      <Button disabled={isShareBtnDisabled}>
+                        Share <Share2 />
+                      </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-md">
                       <DialogHeader>
