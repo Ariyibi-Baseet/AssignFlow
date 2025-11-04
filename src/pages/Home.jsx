@@ -51,6 +51,8 @@ import Beep from "../../public/sound/beep.mp3";
 // Other Component
 import ReactMarkdown from "react-markdown";
 
+import { Helmet } from "react-helmet";
+
 function Home() {
   const [assignmentData, setAssignmentData] = useState("");
   const [textToDisplay, setTextToDisplay] = useState("");
@@ -160,6 +162,32 @@ Generate 1 assignment ideas on`;
 
   return (
     <>
+      <Helmet>
+        <title>AssignFlow 🔥 | AI Web Development Assignment Generator</title>
+        <meta
+          name="description"
+          content="AssignFlow helps instructors and students generate smart, ready-to-use web development assignments using AI — powered by Gemini AI. Save time, inspire creativity, and level up your learning experience."
+        />
+        <meta
+          name="keywords"
+          content="AI assignment generator, web development assignments, HTML CSS JS assignments, React tasks, coding practice ideas, web dev challenges, AssignFlow"
+        />
+        <meta name="author" content="Ariyibi Baseet" />
+        <meta
+          property="og:title"
+          content="AssignFlow 🔥 | AI Assignment Generator for Web Developers"
+        />
+        <meta
+          property="og:description"
+          content="Generate personalized web development assignments with AI. Ideal for instructors and learners. Built with Gemini AI."
+        />
+        <meta property="og:image" content="/public/flame.svg" />
+        <meta
+          property="og:url"
+          content="https://assign-flow-seven.vercel.app/"
+        />
+        <link rel="canonical" href="https://assign-flow-seven.vercel.app/" />
+      </Helmet>
       <Navbar />
       <div id="home-page" className="mx-auto p-5 bg-[#f9fafb]">
         <h1 className="text-2xl sm:text-3xl text-center font-bold mt-22 assignment-head-text text-[#605ff0]">
