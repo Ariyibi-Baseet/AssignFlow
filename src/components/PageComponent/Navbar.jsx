@@ -23,7 +23,7 @@ function Navbar() {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex space-x-6">
-              <Link className="text-gray-700 dark:text-gray-200 hover:text-blue-600 disabled">
+              {/* <Link className="text-gray-700 dark:text-gray-200 hover:text-blue-600 disabled">
                 Home
               </Link>
               <Link className="text-gray-700 dark:text-gray-200 hover:text-blue-600 disabled">
@@ -34,7 +34,7 @@ function Navbar() {
               </Link>
               <Link className="text-gray-700 dark:text-gray-200 hover:text-blue-600 disabled">
                 Saved
-              </Link>
+              </Link> */}
             </div>
             <Link to="https://github.com/Ariyibi-Baseet/AssignFlow">
               <Button className="bg-[#8d37ea] hover:bg-[#6868f0]">
@@ -69,7 +69,7 @@ function Navbar() {
         </div>
 
         {/* Mobile Menu */}
-        <AnimatePresence>
+        {/* <AnimatePresence>
           {isOpen && (
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -78,7 +78,6 @@ function Navbar() {
               transition={{ duration: 0.4, ease: "easeInOut" }}
               className="md:hidden bg-white dark:bg-gray-900 border-t"
             >
-              {/* <div className=""> */}
               <motion.div
                 initial="closed"
                 animate="open"
@@ -107,35 +106,10 @@ function Navbar() {
                     {item}
                   </motion.a>
                 ))}
-                {/* <a
-                  to="#"
-                  className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
-                >
-                  Home
-                </a>
-                <a
-                  to="#"
-                  className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
-                >
-                  Assignments
-                </a>
-                <a
-                  to="#"
-                  className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
-                >
-                  Saved
-                </a>
-                <a
-                  to="#"
-                  className="text-gray-700 dark:text-gray-200 hover:text-blue-600"
-                >
-                  About
-                </a> */}
               </motion.div>
-              {/* </div> */}
             </motion.div>
           )}
-        </AnimatePresence>
+        </AnimatePresence> */}
       </nav>
     </>
   );

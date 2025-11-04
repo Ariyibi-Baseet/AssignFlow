@@ -33,6 +33,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 // component from lucide-react
 import { Pencil, Bookmark, Share2 } from "lucide-react";
 // Page Components
@@ -94,14 +95,36 @@ Generate 1 assignment ideas on`;
           },
         ],
       });
+
+      if (!response || !response.candidates || !response.candidates[0]) {
+        throw new Error("Invalid response from the AI service");
+      }
+
       const text = response.candidates[0].content.parts[0].text;
       // Will later add the text to local storage to keep track of the previous response
       if (text) {
         setTextToDisplay(text);
-        localStorage.setItem("AssignmentArr", text);
+        // localStorage.setItem("AssignmentArr", text);
       } else {
         setErrMessage("No text was generated. Try again with a clearer topic.");
       }
+    } catch (error) {
+      if (error.status === 503 || error.message.includes("503")) {
+        setErrMessage(
+          "The AI service is temporarily unavailable (503). Please wait a few seconds and try again."
+        );
+      } else if (
+        error.name === "TypeError" &&
+        error.message.includes("fetch")
+      ) {
+        setErrMessage(
+          "Network error. Check your internet connection and try again."
+        );
+      } else {
+        setErrMessage(`Something went wrong: ${error.message}`);
+      }
+      toast(error);
+      // console.error("AI Error:", error);
     } finally {
       setIsLoading(false);
       setShowAssignmentResponse(true);
@@ -138,10 +161,7 @@ Generate 1 assignment ideas on`;
   return (
     <>
       <Navbar />
-      <div
-        id="home-page"
-        className="@container mx-auto p-0 sm:p-10 bg-[#f9fafb]"
-      >
+      <div id="home-page" className="mx-auto p-5 bg-[#f9fafb]">
         <h1 className="text-2xl sm:text-3xl text-center font-bold mt-22 assignment-head-text text-[#605ff0]">
           Generate Web Development Assignment with AI
         </h1>
@@ -150,7 +170,7 @@ Generate 1 assignment ideas on`;
           for web development students
         </p>
 
-        <div className="w-full sm:w-3/5 mx-auto shadow-lg p-8 mt-20">
+        <div className="w-full sm:w-4/5 md:w-3/5 lg:w-2/5 mx-auto shadow-lg p-8 mt-20">
           <div className="mb-3">
             <Label htmlFor="topic" className="mb-3">
               Topic
@@ -184,7 +204,7 @@ Generate 1 assignment ideas on`;
             </div>
             <div className="mb-3">
               <Button
-                className="bg-gradient-to-br from-[#605ff0] to-[#8d37ea] hover:bg-[#6868f0]"
+                className="bg-gradient-to-br from-[#605ff0] to-[#8d37ea] hover:bg-[#6868f0] w-full sm:w-auto md:w-auto lg:w-full"
                 onClick={getResFromGeminiAI}
                 disabled={fullyGenerated === true}
                 style={{
@@ -204,7 +224,7 @@ Generate 1 assignment ideas on`;
         </div>
 
         {/* Display Assignment Card */}
-        {showAssignmentResponse && (
+        {showAssignmentResponse && !errMessage && textToDisplay && (
           <div className="mt-20 w-4/5 mx-auto mb-20">
             <Card>
               <CardHeader>
@@ -215,9 +235,6 @@ Generate 1 assignment ideas on`;
                   </Badge>
                 </CardTitle>
                 <Separator />
-                {/* <CardDescription className="mt-3">
-                  <ReactMarkdown>{textToDisplay}</ReactMarkdown>
-                </CardDescription> */}
               </CardHeader>
               <CardContent>
                 <ReactMarkdown>{textToDisplay}</ReactMarkdown>
@@ -275,8 +292,6 @@ Generate 1 assignment ideas on`;
                     </DialogContent>
                   </Dialog>
                 </div>
-
-                {/* <div className="save-area flex items-center"></div> */}
               </CardFooter>
             </Card>
           </div>

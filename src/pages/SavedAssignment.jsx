@@ -21,7 +21,6 @@ function SavedAssignment() {
 
   const fetchAssignment = async () => {
     const docSnap = await getDoc(doc(db, "assignments", id));
-    console.log(docSnap);
     if (docSnap.exists()) setAssignment(docSnap.data());
   };
 
@@ -33,7 +32,7 @@ function SavedAssignment() {
   return (
     <>
       <Navbar />
-      <div className="@container mx-auto p-0 sm:p-10">
+      <div className="mx-auto p-10 w-full">
         <Card>
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
