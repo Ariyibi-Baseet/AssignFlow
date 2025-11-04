@@ -16,7 +16,7 @@ function Navbar() {
           <div className="flex justify-between h-16 items-center">
             {/* Logo / Brand Name */}
             <div className="flex items-center space-x-2">
-              <span className="flex items-center text-2xl font-bold text-blue-600">
+              <span className="flex items-center text-2xl font-bold text-[#8d37ea]">
                 AssignFlow <Flame />
               </span>
             </div>
@@ -37,7 +37,7 @@ function Navbar() {
               </Link>
             </div>
             <Link to="https://github.com/Ariyibi-Baseet/AssignFlow">
-              <Button variant="default">
+              <Button className="bg-[#8d37ea] hover:bg-[#6868f0]">
                 <Github size={30} />
                 Star on Github
               </Button>

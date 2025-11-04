@@ -37,8 +37,8 @@ function SavedAssignment() {
         <Card>
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
-              <h2 className="uppercase">{`${assignment.topic} Assignment ✍`}</h2>
-              <Badge>Beginner</Badge>
+              <h2 className="uppercase font-bold">{`${assignment.topic} Assignment ✍`}</h2>
+              <Badge className="bg-green-200 text-green-800">Beginner</Badge>
             </CardTitle>
             <Separator />
           </CardHeader>

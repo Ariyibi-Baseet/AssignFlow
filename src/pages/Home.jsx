@@ -37,6 +37,7 @@ import {
 import { Pencil, Bookmark, Share2 } from "lucide-react";
 // Page Components
 import Navbar from "../components/PageComponent/Navbar";
+import Footer from "../components/PageComponent/Footer";
 // import OpenAI from "openai";
 import { GoogleGenAI } from "@google/genai";
 // React Hooks
@@ -130,17 +131,21 @@ Generate 1 assignment ideas on`;
       return console.error(error);
     } finally {
       setSaveLoading(false);
+      play();
     }
   };
 
   return (
     <>
       <Navbar />
-      <div id="home-page" className="@container mx-auto p-0 sm:p-10">
-        <h1 className="text-2xl sm:text-3xl text-center font-bold mt-28">
+      <div
+        id="home-page"
+        className="@container mx-auto p-0 sm:p-10 bg-[#f9fafb]"
+      >
+        <h1 className="text-2xl sm:text-3xl text-center font-bold mt-22 assignment-head-text text-[#605ff0]">
           Generate Web Development Assignment with AI
         </h1>
-        <p className="text-lg sm:text-xl text-center mx-auto mt-3 max-w-[540px]">
+        <p className="text-lg sm:text-xl text-center mx-auto mt-3 max-w-[540px] assignment-paragraph text-[#3c3c3c]">
           Enter a topic below and let AI suggest practical exercises tailored
           for web development students
         </p>
@@ -179,11 +184,14 @@ Generate 1 assignment ideas on`;
             </div>
             <div className="mb-3">
               <Button
+                className="bg-gradient-to-br from-[#605ff0] to-[#8d37ea] hover:bg-[#6868f0]"
                 onClick={getResFromGeminiAI}
                 disabled={fullyGenerated === true}
                 style={{
-                  backgroundColor:
-                    isGenerated === "Generated!🎉" ? "green" : "black",
+                  backgroundImage:
+                    isGenerated === "Generated!🎉"
+                      ? "linear-gradient(to bottom right, #605ff0, #605ff0)"
+                      : "linear-gradient(to bottom right, #605ff0, #8d37ea)",
                 }}
               >
                 <Pencil /> {isGenerated} {isLoading && <Spinner />}
@@ -201,8 +209,10 @@ Generate 1 assignment ideas on`;
             <Card>
               <CardHeader>
                 <CardTitle className="flex justify-between items-center">
-                  <h2 className="uppercase">{`${assignmentData} Assignment ✍`}</h2>
-                  <Badge>Beginner</Badge>
+                  <h2 className="uppercase assignment-title">{`${assignmentData} Assignment ✍`}</h2>
+                  <Badge className="bg-green-200 text-green-800">
+                    Beginner
+                  </Badge>
                 </CardTitle>
                 <Separator />
                 {/* <CardDescription className="mt-3">
@@ -214,7 +224,10 @@ Generate 1 assignment ideas on`;
               </CardContent>
               <CardFooter>
                 <div className="flex items-center justify-between w-full">
-                  <Button variant="default" onClick={saveAssignmment}>
+                  <Button
+                    className="bg-[#605ff0] hover:bg-[#6868f0]"
+                    onClick={saveAssignmment}
+                  >
                     <Bookmark />
                     <span className="ms-1">{isSaveText}</span>
                     {isSaveLoading && <Spinner />}
@@ -222,7 +235,10 @@ Generate 1 assignment ideas on`;
 
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button disabled={isShareBtnDisabled}>
+                      <Button
+                        className="bg-[#605ff0] hover:bg-[#6868f0]"
+                        disabled={isShareBtnDisabled}
+                      >
                         Share <Share2 />
                       </Button>
                     </DialogTrigger>
@@ -265,6 +281,7 @@ Generate 1 assignment ideas on`;
             </Card>
           </div>
         )}
+        <Footer />
       </div>
     </>
   );
