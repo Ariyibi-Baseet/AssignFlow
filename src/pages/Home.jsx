@@ -181,7 +181,10 @@ Generate 1 assignment ideas on`;
           property="og:description"
           content="Generate personalized web development assignments with AI. Ideal for instructors and learners. Built with Gemini AI."
         />
-        <meta property="og:image" content="/public/flame.svg" />
+        <meta
+          property="og:image"
+          content="../../public/assignflow_og_image.jpg"
+        />
         <meta
           property="og:url"
           content="https://assign-flow-seven.vercel.app/"
