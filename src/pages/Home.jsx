@@ -35,14 +35,14 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 // component from lucide-react
-import { Pencil, Bookmark, Share2 } from "lucide-react";
+import { Pencil, Bookmark, Share2, MoveRight } from "lucide-react";
 // Page Components
 import Navbar from "../components/PageComponent/Navbar";
 import Footer from "../components/PageComponent/Footer";
 // import OpenAI from "openai";
 import { GoogleGenAI } from "@google/genai";
 // React Hooks
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useSound from "use-sound";
 // Firebase
 import { doc, setDoc } from "firebase/firestore";
@@ -51,10 +51,11 @@ import Beep from "../../public/sound/beep.mp3";
 // Other Component
 import ReactMarkdown from "react-markdown";
 
-import { Helmet } from "react-helmet";
+// import { Helmet } from "react-helmet";
 
 function Home() {
   const [assignmentData, setAssignmentData] = useState("");
+  const [studentName, setStudentName] = useState("");
   const [textToDisplay, setTextToDisplay] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSaveLoading, setSaveLoading] = useState(false);
@@ -62,10 +63,11 @@ function Home() {
   const [fullyGenerated, setFullyGenerated] = useState(false);
   const [showAssignmentResponse, setShowAssignmentResponse] = useState(false);
   const [errMessage, setErrMessage] = useState("");
+  const [isFilledErrorMsg, setFilledErrorMsg] = useState(false);
   const [isSaveText, setIsSaveText] = useState("Save");
   const [viewAssLink, setViewAssLink] = useState("");
   const [isShareBtnDisabled, setShareBtnDisabled] = useState(true);
-  // const [assignmentArr, setAssignmentArr] = useState([]);
+  const [open, setOpen] = useState(false);
   const [play] = useSound(Beep, { volume: 0.7 });
 
   // let assignmentArr = [""];
@@ -146,6 +148,7 @@ Generate 1 assignment ideas on`;
         id,
         topic: assignmentData,
         content: textToDisplay,
+        student_name: localStorage.getItem("Student_name"),
         createdAt: new Date().toISOString(),
       });
 
@@ -158,11 +161,30 @@ Generate 1 assignment ideas on`;
       setSaveLoading(false);
       play();
     }
+
+    console.log("student name", studentName);
   };
+
+  const proceedToAssignment = () => {
+    if (studentName === "") {
+      setFilledErrorMsg(true);
+    } else {
+      setOpen(false);
+      localStorage.setItem("Student_name", studentName);
+    }
+  };
+
+  useEffect(() => {
+    const seen = localStorage.getItem("welcome_seen");
+    if (!seen) {
+      setOpen(true);
+      localStorage.setItem("welcome_seen", "true");
+    }
+  }, []);
 
   return (
     <>
-      <Helmet>
+      {/* <Helmet>
         <title>AssignFlow 🔥 | AI Web Development Assignment Generator</title>
         <meta
           name="description"
@@ -190,7 +212,7 @@ Generate 1 assignment ideas on`;
           content="https://assign-flow-seven.vercel.app/"
         />
         <link rel="canonical" href="https://assign-flow-seven.vercel.app/" />
-      </Helmet>
+      </Helmet> */}
       <Navbar />
       <div id="home-page" className="mx-auto p-5 bg-[#f9fafb]">
         <h1 className="text-2xl sm:text-3xl text-center font-bold mt-22 assignment-head-text text-[#605ff0]">
@@ -201,7 +223,7 @@ Generate 1 assignment ideas on`;
           for web development students
         </p>
 
-        <div className="w-full sm:w-4/5 md:w-3/5 lg:w-2/5 mx-auto shadow-lg p-8 mt-20">
+        <div className="w-full sm:w-4/5 md:w-3/5 lg:w-2/5 mx-auto shadow-lg p-8 mt-20 bg-white">
           <div className="mb-3">
             <Label htmlFor="topic" className="mb-3">
               Topic
@@ -235,7 +257,7 @@ Generate 1 assignment ideas on`;
             </div>
             <div className="mb-3">
               <Button
-                className="bg-gradient-to-br from-[#605ff0] to-[#8d37ea] hover:bg-[#6868f0] w-full sm:w-auto md:w-auto lg:w-full"
+                className="bg-linear-to-br from-[#605ff0] to-[#8d37ea] hover:bg-[#6868f0] w-full sm:w-auto md:w-auto lg:w-full"
                 onClick={getResFromGeminiAI}
                 disabled={fullyGenerated === true}
                 style={{
@@ -254,7 +276,9 @@ Generate 1 assignment ideas on`;
           </div>
         </div>
 
-        {/* Display Assignment Card */}
+        {/* ******************************************************* */}
+        {/* ************* DISPLAY ASSIGNMENT CARD *******************/}
+        {/* ******************************************************* */}
         {showAssignmentResponse && !errMessage && textToDisplay && (
           <div className="mt-20 w-4/5 mx-auto mb-20">
             <Card>
@@ -327,6 +351,53 @@ Generate 1 assignment ideas on`;
             </Card>
           </div>
         )}
+        {/* ****************************************************** */}
+
+        {/* *****************************************************  */}
+
+        <Dialog open={open}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Student Name</DialogTitle>
+              <DialogDescription>
+                Kindly Input Your Name before you proceed to Generate
+                Assignment/Exercise
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex items-center gap-2">
+              <div className="grid flex-1 gap-2">
+                <Label htmlFor="student_name" className="sr-only">
+                  Link
+                </Label>
+                <Input
+                  id="link"
+                  placeholder="Student Name Here..."
+                  onChange={(e) => setStudentName(e.target.value)}
+                />
+              </div>
+            </div>
+            <DialogFooter className="sm:justify-start">
+              <DialogClose asChild>
+                <div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="bg-linear-to-br from-[#605ff0] to-[#8d37ea] hover:bg-[#6868f0] text-white"
+                    onClick={proceedToAssignment}
+                  >
+                    Proceed <MoveRight />
+                  </Button>
+                  {isFilledErrorMsg && (
+                    <p className="text-destructive text-sm mt-2">
+                      Student Name field Cannot be empty
+                    </p>
+                  )}
+                </div>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         <Footer />
       </div>
     </>

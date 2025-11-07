@@ -28,11 +28,14 @@ function SavedAssignment() {
     fetchAssignment();
   }, [id]);
 
-  if (!assignment) return <p className="text-center mt-10">Loading...</p>;
+  if (!assignment) return <div className="text-center mt-10">Loading...</div>;
   return (
     <>
       <Navbar />
-      <div className="mx-auto p-10 w-full">
+      <div
+        className="mx-auto p-10 w-full bg-[#f9fafb]"
+        style={{ minHeight: "100vh" }}
+      >
         <Card>
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
@@ -43,7 +46,16 @@ function SavedAssignment() {
           </CardHeader>
           <CardContent>
             <ReactMarkdown>{assignment.content}</ReactMarkdown>
+            <Separator />
           </CardContent>
+          <CardFooter>
+            <p className="font-bold text-[#605ff0]">
+              Student Name:&nbsp;
+              <span className="font-normal text-black italic">
+                {assignment.student_name}
+              </span>
+            </p>
+          </CardFooter>
         </Card>
       </div>
     </>
