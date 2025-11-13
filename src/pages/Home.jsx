@@ -5,19 +5,25 @@ import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
   SelectLabel,
   SelectGroup,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -42,7 +48,7 @@ import Footer from "../components/PageComponent/Footer";
 // import OpenAI from "openai";
 import { GoogleGenAI } from "@google/genai";
 // React Hooks
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import useSound from "use-sound";
 // Firebase
 import { doc, setDoc } from "firebase/firestore";
@@ -50,6 +56,7 @@ import { db } from "../fireBaseConfig";
 import Beep from "../../public/sound/beep.mp3";
 // Other Component
 import ReactMarkdown from "react-markdown";
+import { useAuth } from "../context/authContext";
 
 // import { Helmet } from "react-helmet";
 
@@ -63,12 +70,12 @@ function Home() {
   const [fullyGenerated, setFullyGenerated] = useState(false);
   const [showAssignmentResponse, setShowAssignmentResponse] = useState(false);
   const [errMessage, setErrMessage] = useState("");
-  const [isFilledErrorMsg, setFilledErrorMsg] = useState(false);
   const [isSaveText, setIsSaveText] = useState("Save");
   const [viewAssLink, setViewAssLink] = useState("");
   const [isShareBtnDisabled, setShareBtnDisabled] = useState(true);
-  const [open, setOpen] = useState(false);
+  const [isSaveBtnDisabled, setSaveBtnDisabled] = useState(false);
   const [play] = useSound(Beep, { volume: 0.7 });
+  const { user, signInWithGoogle } = useAuth();
 
   // let assignmentArr = [""];
   const ai = new GoogleGenAI({
@@ -128,7 +135,6 @@ Generate 1 assignment ideas on`;
         setErrMessage(`Something went wrong: ${error.message}`);
       }
       toast(error);
-      // console.error("AI Error:", error);
     } finally {
       setIsLoading(false);
       setShowAssignmentResponse(true);
@@ -137,6 +143,10 @@ Generate 1 assignment ideas on`;
       setFullyGenerated(true);
     }
   };
+
+  // const openUserLoggedInAlertBox = () => {
+  //   setOpenUserLoggedInBox(true);
+  // };
 
   const saveAssignmment = async () => {
     try {
@@ -148,7 +158,7 @@ Generate 1 assignment ideas on`;
         id,
         topic: assignmentData,
         content: textToDisplay,
-        student_name: localStorage.getItem("Student_name"),
+        student_name: localStorage.getItem("student_name"),
         createdAt: new Date().toISOString(),
       });
 
@@ -160,27 +170,9 @@ Generate 1 assignment ideas on`;
     } finally {
       setSaveLoading(false);
       play();
-    }
-
-    console.log("student name", studentName);
-  };
-
-  const proceedToAssignment = () => {
-    if (studentName === "") {
-      setFilledErrorMsg(true);
-    } else {
-      setOpen(false);
-      localStorage.setItem("Student_name", studentName);
+      isSaveBtnDisabled(true);
     }
   };
-
-  useEffect(() => {
-    const seen = localStorage.getItem("welcome_seen");
-    if (!seen) {
-      setOpen(true);
-      localStorage.setItem("welcome_seen", "true");
-    }
-  }, []);
 
   return (
     <>
@@ -298,10 +290,13 @@ Generate 1 assignment ideas on`;
                 <div className="flex items-center justify-between w-full">
                   <Button
                     className="bg-[#605ff0] hover:bg-[#6868f0]"
-                    onClick={saveAssignmment}
+                    onClick={!user ? signInWithGoogle : saveAssignmment}
+                    disabled={isSaveBtnDisabled}
                   >
                     <Bookmark />
-                    <span className="ms-1">{isSaveText}</span>
+                    <span className="ms-1">
+                      {user ? isSaveText : "Login with Google to Save"}
+                    </span>
                     {isSaveLoading && <Spinner />}
                   </Button>
 
@@ -354,49 +349,6 @@ Generate 1 assignment ideas on`;
         {/* ****************************************************** */}
 
         {/* *****************************************************  */}
-
-        <Dialog open={open}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Student Name</DialogTitle>
-              <DialogDescription>
-                Kindly Input Your Name before you proceed to Generate
-                Assignment/Exercise
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex items-center gap-2">
-              <div className="grid flex-1 gap-2">
-                <Label htmlFor="student_name" className="sr-only">
-                  Link
-                </Label>
-                <Input
-                  id="link"
-                  placeholder="Student Name Here..."
-                  onChange={(e) => setStudentName(e.target.value)}
-                />
-              </div>
-            </div>
-            <DialogFooter className="sm:justify-start">
-              <DialogClose asChild>
-                <div>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="bg-linear-to-br from-[#605ff0] to-[#8d37ea] hover:bg-[#6868f0] text-white"
-                    onClick={proceedToAssignment}
-                  >
-                    Proceed <MoveRight />
-                  </Button>
-                  {isFilledErrorMsg && (
-                    <p className="text-destructive text-sm mt-2">
-                      Student Name field Cannot be empty
-                    </p>
-                  )}
-                </div>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
 
         <Footer />
       </div>
