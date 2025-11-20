@@ -1,7 +1,7 @@
 function Footer() {
   return (
     <>
-      <footer className="mt-10 mb-5 text-center">
+      <footer className="mt-10 mb-5 text-center footer">
         <a href="#" className="font-bold text-[#8d37ea]">
           Powered By Gemini AI
         </a>
