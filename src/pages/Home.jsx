@@ -48,7 +48,7 @@ import Footer from "../components/PageComponent/Footer";
 // import OpenAI from "openai";
 import { GoogleGenAI } from "@google/genai";
 // React Hooks
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSound from "use-sound";
 // Firebase
 import { doc, setDoc } from "firebase/firestore";
@@ -57,6 +57,10 @@ import Beep from "../../public/sound/beep.mp3";
 // Other Component
 import ReactMarkdown from "react-markdown";
 import { useAuth } from "../context/authContext";
+
+// from driver js
+// import { driver } from "driver.js";
+// import "driver.js/dist/driver.css";
 
 // import { Helmet } from "react-helmet";
 
@@ -76,6 +80,21 @@ function Home() {
   const [isSaveBtnDisabled, setSaveBtnDisabled] = useState(false);
   const [play] = useSound(Beep, { volume: 0.7 });
   const { user, signInWithGoogle } = useAuth();
+
+  // const driverObj = driver();
+
+  // const startTour = () => {
+  //   driverObj.highlight({
+  //     showProgress: true,
+  //     element: ".assignment-head-text",
+  //     popover: {
+  //       title: "Welcome to AssignFlow! 🚀",
+  //       description:
+  //         "Your AI-powered web development assignment generator. Let's take a quick tour!",
+  //       position: "bottom",
+  //     },
+  //   });
+  // };
 
   // let assignmentArr = [""];
   const ai = new GoogleGenAI({
@@ -174,6 +193,10 @@ Generate 1 assignment ideas on`;
     }
   };
 
+  // useEffect(() => {
+  //   getResFromGeminiAI();
+  // }, []);
+
   return (
     <>
       {/* <Helmet>
@@ -215,7 +238,7 @@ Generate 1 assignment ideas on`;
           for web development students
         </p>
 
-        <div className="w-full sm:w-4/5 md:w-3/5 lg:w-2/5 mx-auto shadow-lg p-8 mt-20 bg-white">
+        <div className="w-full sm:w-4/5 md:w-3/5 lg:w-2/5 mx-auto shadow-lg p-8 mt-20 bg-white topic-block">
           <div className="mb-3">
             <Label htmlFor="topic" className="mb-3">
               Topic
@@ -249,7 +272,7 @@ Generate 1 assignment ideas on`;
             </div>
             <div className="mb-3">
               <Button
-                className="bg-linear-to-br from-[#605ff0] to-[#8d37ea] hover:bg-[#6868f0] w-full sm:w-auto md:w-auto lg:w-full"
+                className="bg-linear-to-br from-[#605ff0] to-[#8d37ea] hover:bg-[#6868f0] w-full sm:w-auto md:w-auto lg:w-full generate-assignment-btn"
                 onClick={getResFromGeminiAI}
                 disabled={fullyGenerated === true}
                 style={{
@@ -272,7 +295,7 @@ Generate 1 assignment ideas on`;
         {/* ************* DISPLAY ASSIGNMENT CARD *******************/}
         {/* ******************************************************* */}
         {showAssignmentResponse && !errMessage && textToDisplay && (
-          <div className="mt-20 w-4/5 mx-auto mb-20">
+          <div className="mt-20 w-4/5 mx-auto mb-20 assignment-response-card">
             <Card>
               <CardHeader>
                 <CardTitle className="flex justify-between items-center">
@@ -289,7 +312,7 @@ Generate 1 assignment ideas on`;
               <CardFooter>
                 <div className="flex items-center justify-between w-full">
                   <Button
-                    className="bg-[#605ff0] hover:bg-[#6868f0]"
+                    className="bg-[#605ff0] hover:bg-[#6868f0] save-assignment-btn"
                     onClick={!user ? signInWithGoogle : saveAssignmment}
                     disabled={isSaveBtnDisabled}
                   >
@@ -303,7 +326,7 @@ Generate 1 assignment ideas on`;
                   <Dialog>
                     <DialogTrigger asChild>
                       <Button
-                        className="bg-[#605ff0] hover:bg-[#6868f0]"
+                        className="bg-[#605ff0] hover:bg-[#6868f0] share-assignment-btn"
                         disabled={isShareBtnDisabled}
                       >
                         Share <Share2 />
